@@ -1,0 +1,63 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # workstation server
+  config.vm.define "workstation-pipeline" do |workstation|
+    workstation.vm.box = "bento/ubuntu-20.04"
+    workstation.vm.hostname = "workstation-pipeline"
+    workstation.vm.box_url = "bento/ubuntu-20.04"
+    workstation.vm.network :private_network, ip: "192.168.56.2"
+    workstation.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+      v.customize ["modifyvm", :id, "--memory", 3072]
+      v.customize ["modifyvm", :id, "--name", "workstation-pipeline"]
+      v.customize ["modifyvm", :id, "--cpus", "2"]
+    end
+    config.vm.provision "shell", inline: <<-SHELL
+      sed -i 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/g' /etc/ssh/sshd_config    
+      service ssh restart
+    SHELL
+    workstation.vm.provision "shell", path: "workstation.sh"
+  end
+  # workstation2 server
+  config.vm.define "workstation2-pipeline" do |workstation2|
+    workstation2.vm.box = "bento/ubuntu-20.04"
+    workstation2.vm.hostname = "workstation2-pipeline"
+    workstation2.vm.box_url = "bento/ubuntu-20.04"
+    workstation2.vm.network :private_network, ip: "192.168.56.3"
+    workstation2.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+      v.customize ["modifyvm", :id, "--memory", 3072]
+      v.customize ["modifyvm", :id, "--name", "workstation2-pipeline"]
+      v.customize ["modifyvm", :id, "--cpus", "2"]
+    end
+    config.vm.provision "shell", inline: <<-SHELL
+      sed -i 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/g' /etc/ssh/sshd_config    
+      service ssh restart
+    SHELL
+    workstation2.vm.provision "shell", path: "workstation2.sh"
+  end  
+  # workstation3 server
+  config.vm.define "workstation3-pipeline" do |workstation3|
+    workstation3.vm.box = "bento/ubuntu-20.04"
+    workstation3.vm.hostname = "workstation3-pipeline"
+    workstation3.vm.box_url = "bento/ubuntu-20.04"
+    workstation3.vm.network :private_network, ip: "192.168.56.4"
+    workstation3.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+      v.customize ["modifyvm", :id, "--memory", 3072]
+      v.customize ["modifyvm", :id, "--name", "workstation3-pipeline"]
+      v.customize ["modifyvm", :id, "--cpus", "2"]
+    end
+    config.vm.provision "shell", inline: <<-SHELL
+      sed -i 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/g' /etc/ssh/sshd_config    
+      service ssh restart
+    SHELL
+    workstation3.vm.provision "shell", path: "workstation3.sh"
+  end    
+  
+end
